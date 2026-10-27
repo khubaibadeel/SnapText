@@ -1,0 +1,58 @@
+name: Build Windows Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Verify Windows OCR bindings
+        run: python -c "from winrt.windows.media.ocr import OcrEngine; print('Windows OCR bindings ready')"
+
+      - name: Run tests
+        run: python -m pytest -q
+
+      - name: Build complete application folder
+        run: pyinstaller --noconfirm SnapText.spec
+
+      - name: Verify release contents
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "dist/SnapText/SnapText.exe")) {
+            throw "SnapText.exe was not created."
+          }
+          $ocrBinding = Get-ChildItem -Path "dist/SnapText" -Recurse -Filter "_winrt_windows_media_ocr*.pyd" | Select-Object -First 1
+          if (-not $ocrBinding) {
+            throw "Windows OCR bindings were not included in the release."
+          }
+          Write-Host "OCR binding included at $($ocrBinding.FullName)"
+
+      - name: Package release
+        shell: pwsh
+        run: Compress-Archive -Path dist/SnapText/* -DestinationPath SnapText-Windows.zip
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: SnapText-Windows.zip
+          generate_release_notes: true

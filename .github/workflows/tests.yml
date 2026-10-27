@@ -1,0 +1,37 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Verify Windows OCR package
+        if: runner.os == 'Windows'
+        run: python -c "from winrt.windows.media.ocr import OcrEngine; print('Windows OCR bindings ready')"
+
+      - name: Compile source
+        run: python -m compileall -q snaptext_app
+
+      - name: Run tests
+        run: python -m pytest -q

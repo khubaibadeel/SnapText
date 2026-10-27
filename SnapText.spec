@@ -1,8 +1,13 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 from pathlib import Path
+<<<<<<< HEAD
 from PyInstaller.utils.hooks import collect_data_files
 
+=======
+
+block_cipher = None
+>>>>>>> origin/main
 project_root = Path(SPECPATH)
 runtime_dir = project_root / "runtime" / "tesseract"
 
@@ -11,11 +16,14 @@ datas = [
     ("assets/icon.png", "assets"),
 ]
 
+<<<<<<< HEAD
 # CustomTkinter loads JSON themes and OTF fonts at runtime. They are not
 # guaranteed to be detected through static Python imports.
 datas += collect_data_files("customtkinter")
 
 
+=======
+>>>>>>> origin/main
 # Tesseract is an optional language/accuracy enhancement. A release may include
 # it, but SnapText no longer refuses to build or start without it because
 # English OCR uses Windows.Media.Ocr.
@@ -57,7 +65,11 @@ a = Analysis(
     excludes=["pandas", "numpy", "scipy", "matplotlib"],
     noarchive=False,
 )
+<<<<<<< HEAD
 pyz = PYZ(a.pure)
+=======
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+>>>>>>> origin/main
 
 exe = EXE(
     pyz,
@@ -68,7 +80,11 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
+<<<<<<< HEAD
     upx=False,  # Improve reliability and avoid unnecessary AV false positives.
+=======
+    upx=True,
+>>>>>>> origin/main
     console=False,
     disable_windowed_traceback=False,
     icon=["icon.ico"],
@@ -80,7 +96,11 @@ coll = COLLECT(
     a.binaries,
     a.datas,
     strip=False,
+<<<<<<< HEAD
     upx=False,  # Improve reliability and avoid unnecessary AV false positives.
+=======
+    upx=True,
+>>>>>>> origin/main
     upx_exclude=[],
     name="SnapText",
 )
