@@ -1,0 +1,43 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Packaging and PyInstaller output
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+*.manifest
+
+# Local application data
+config.json
+history.json
+Screenshots/
+*.log
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Optional local Tesseract runtime (not required for English OCR)
+runtime/tesseract/
